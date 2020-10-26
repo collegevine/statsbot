@@ -11,6 +11,7 @@ import Data.Time.Clock (UTCTime)
 class MetricSource a where
     fetchData :: a -> IO Metrics
 
+-- | A heterogeneous wrapper for unevaluated metrics queries, regardless of the data source
 data PendingMetrics = forall a. (MetricSource a, FromJSON a, Show a) => PendingMetrics a
 instance Show PendingMetrics where
     show (PendingMetrics src) = show src

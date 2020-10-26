@@ -13,6 +13,13 @@ It should be easy for developers to define a new type of datasource, and non-dev
 Statsbot supports the bare minimum datasources required for our use, but its trivial to add new ones.
 
 #### PostgreSQL
+```yaml
+name: Important stat
+conn_string_env_var: WAREHOUSE_CONNECTION
+query: |
+    select count(stuff) as
+```
+
 
 ### Defining a new metric
 
