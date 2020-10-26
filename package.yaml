@@ -1,0 +1,94 @@
+name:                statsbot
+version:             0.1.0.0
+github:              "CollegeVine/statsbot"
+license:             BSD3
+author:              "Chris Coffey"
+maintainer:          "chris@collegevine.com"
+copyright:           "2020 CollegeVine"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/CollegeVine/statsbot#readme>
+
+dependencies:
+- aeson
+- base
+- bytestring
+- containers
+- http-client
+- mtl
+- postgresql-simple
+- protolude
+- text
+- time
+- yaml
+
+default-extensions:
+  - AllowAmbiguousTypes
+  - BlockArguments
+  - ConstraintKinds
+  - DataKinds
+  - DeriveAnyClass
+  - DeriveGeneric
+  - DerivingStrategies
+  - DerivingVia
+  - DuplicateRecordFields
+  - ExistentialQuantification
+  - FlexibleContexts
+  - FlexibleInstances
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - MultiParamTypeClasses
+  - MultiWayIf
+  - NamedFieldPuns
+  - NoImplicitPrelude
+  - OverloadedStrings
+  - PartialTypeSignatures
+  - PatternSynonyms
+  - RankNTypes
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TransformListComp
+  - TupleSections
+  - TypeApplications
+  - TypeFamilies
+  - TypeOperators
+  - TypeSynonymInstances
+  - UndecidableInstances
+  - ViewPatterns
+  - GADTs
+
+library:
+  source-dirs: src
+
+executables:
+  statsbot-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - statsbot
+
+tests:
+  statsbot-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - statsbot
