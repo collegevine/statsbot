@@ -55,6 +55,7 @@ instance ToJSON ReportPayload where
                   "type" .= toJSON ("section"::Text)
                 , "text" .= object [
                       "type" .= ("mrkdwn"::Text)
+                    , "verbatim" .= True
                     , "text" .= reportBody payload
                     ]
                 ]

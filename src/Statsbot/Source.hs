@@ -38,13 +38,10 @@ findMedian (Metrics rawData) =
     maybe (fromRational notANumber) fst .
         head .
         drop (length rawData `div` 2)  $
-        sortBy timestampComparison rawData
+        sortOn fst rawData
 
 findLatest ::
     Metrics
     -> Float
 findLatest (Metrics rawData) =
-    fst $ maximumBy timestampComparison rawData
-
-timestampComparison ::DataPoint -> DataPoint -> Ordering
-timestampComparison = (comparing snd)
+    fst $ maximumBy (comparing snd) rawData

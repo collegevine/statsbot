@@ -22,12 +22,12 @@ runStatsbot configFilePath = do
     rows <- mapM toReportRow $ rows config
     let body = prettySlackReport (reportTitle config) (historyWindowDays config) rows
     publishReport (targetURL config) (reportTitle config) body
-    where
-        toReportRow (Row t l m) = do
-            evaluated <- evaluateSource m
-            pure $ ReportRow {
-                  title = t
-                , link = l
-                , daily = todayValue evaluated
-                , historicalMedian = median evaluated
-                }
+
+toReportRow (Row t l m) = do
+    evaluated <- evaluateSource m
+    pure $ ReportRow {
+            title = t
+        , link = l
+        , daily = todayValue evaluated
+        , historicalMedian = median evaluated
+        }

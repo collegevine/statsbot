@@ -12,7 +12,8 @@ prettySlackReport ::
     -> Int
     -> [ReportRow]
     -> Text
-prettySlackReport title lookback rows = T.intercalate "\n" (header:prettyRows)
+prettySlackReport title lookback rows =
+    "```" <> T.intercalate "\n" (header:prettyRows) <> "```"
     where
         header = reportHeader rowWidths lookback
         prettyRows = prettySlackRow rowWidths <$> rows
@@ -25,10 +26,9 @@ prettySlackRow ::
     -> ReportRow
     -> Text
 prettySlackRow (col1, col2, col3, col4) (ReportRow (Title t) (Link l) d p) =
-    pad col1 (bold t) <> pad col2 (T.pack $ show d) <> pad col3 (T.pack $ show p) <> helpLink l
+    pad col1 t <> pad col2 (T.pack $ show d) <> pad col3 (T.pack $ show p) <> l
     where
         bold str = "*" <> str <> "*"
-        helpLink str = "<"<> str <>"|Full report>"
 
 reportHeader ::
     (Int, Int, Int, Int)
@@ -52,7 +52,7 @@ widths ::
     [ReportRow]
     -> (Int, Int, Int, Int)
 widths =
-    tupelize . map ((+ 6) . maximum) . transpose . map widthVector
+    tupelize . map ((+ 4) . maximum) . transpose . map widthVector
     where
         widthVector (ReportRow (Title t) (Link l) d p) =
             [
