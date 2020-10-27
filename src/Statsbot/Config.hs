@@ -1,4 +1,7 @@
-module Statsbot.Config where
+module Statsbot.Config (
+    ConfigErrorMessage(..),
+    loadRowConfigurations
+) where
 
 import Protolude
 
@@ -13,7 +16,7 @@ import Statsbot.Types (
     Link(..),
     PendingMetrics(..)
     )
-import Statsbot.Source.PostgresSQL
+import Statsbot.Source
 
 {-| A config file example
  -
@@ -43,13 +46,13 @@ import Statsbot.Source.PostgresSQL
  -}
 
 
-newtype ErrorMessage =
+newtype ConfigErrorMessage =
     ConfigLoadError {errorMessage :: Text }
     deriving Show
 
 loadRowConfigurations ::
     FilePath
-    -> IO (Either ErrorMessage [Row])
+    -> IO (Either ConfigErrorMessage [Row])
 loadRowConfigurations configFile = do
     res <- decodeFileEither configFile
     case res of
@@ -65,7 +68,6 @@ instance FromJSON ConfigFile where
     parseJSON = withObject "Config file" $ \raw -> do
         rowSpecs <- raw .: "rows"
         pure $ ConfigFile rowSpecs
-
 
 data RowSpec =
     PSQLRow Title Link PostgresMetricSource

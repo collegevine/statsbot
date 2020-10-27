@@ -31,5 +31,5 @@ data ReportRow =
       title :: Title
     , link :: Link
     , daily :: Float
-    , past30Days :: Float
+    , historicalMedian :: Float
     }
