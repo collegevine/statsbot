@@ -20,7 +20,7 @@ runStatsbot configFilePath = do
                 Right rows -> pure rows
                 Left (ConfigLoadError err) -> putStrLn err *>  exitFailure
     rows <- mapM toReportRow $ rows config
-    let body = prettySlackReport rows
+    let body = prettySlackReport (reportTitle config) (historyWindowDays config) rows
     publishReport (targetURL config) (reportTitle config) body
     where
         toReportRow (Row t l m) = do

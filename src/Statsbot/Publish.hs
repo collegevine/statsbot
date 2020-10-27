@@ -49,6 +49,7 @@ data ReportPayload =
 instance ToJSON ReportPayload where
     toJSON payload = object [
           "text" .=  title payload
+        , "username" .= title payload
         , "blocks" .= toJSON [
             object [
                   "type" .= toJSON ("section"::Text)
