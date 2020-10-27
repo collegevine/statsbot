@@ -1,23 +1,27 @@
 module Statsbot (
-    produceRows
+    runStatsbot
 )
 where
 
 import Protolude
 
-import Statsbot.Config (ConfigErrorMessage(..), loadRowConfigurations)
+import Statsbot.Config
 import Statsbot.Source (EvaluatedMetrics(..), evaluateSource)
+import Statsbot.PrettyPrint (prettySlackReport)
+import Statsbot.Publish (publishReport)
 import Statsbot.Types
 
-produceRows ::
+runStatsbot ::
     FilePath
-    -> IO [ReportRow]
-produceRows configFile = do
-    loaderResults <- loadRowConfigurations configFile
-    rows <- case loaderResults of
+    -> IO ()
+runStatsbot configFilePath = do
+    loaderResults <- loadRowConfigurations configFilePath
+    config <- case loaderResults of
                 Right rows -> pure rows
-                Left (ConfigLoadError err) -> putStrLn err *>  pure []
-    mapM toReportRow rows
+                Left (ConfigLoadError err) -> putStrLn err *>  exitFailure
+    rows <- mapM toReportRow $ rows config
+    let body = prettySlackReport rows
+    publishReport (targetURL config) (reportTitle config) body
     where
         toReportRow (Row t l m) = do
             evaluated <- evaluateSource m
@@ -27,4 +31,3 @@ produceRows configFile = do
                 , daily = todayValue evaluated
                 , historicalMedian = median evaluated
                 }
-

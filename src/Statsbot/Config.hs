@@ -1,5 +1,6 @@
 module Statsbot.Config (
     ConfigErrorMessage(..),
+    ConfigFile(..),
     loadRowConfigurations
 ) where
 
@@ -52,22 +53,38 @@ newtype ConfigErrorMessage =
 
 loadRowConfigurations ::
     FilePath
-    -> IO (Either ConfigErrorMessage [Row])
+    -> IO (Either ConfigErrorMessage (ConfigFile Row))
 loadRowConfigurations configFile = do
     res <- decodeFileEither configFile
     case res of
         Left err -> pure $ Left (ConfigLoadError "whoops")
-        Right (ConfigFile rows) -> pure . Right $ toRow <$> rows
+        Right conf -> pure . Right $ translateConfigRows conf
     where
         toRow :: RowSpec -> Row
         toRow (PSQLRow t l src) = Row t l $ PendingMetrics src
 
-newtype ConfigFile = ConfigFile { rows :: [RowSpec] }
+        translateConfigRows conf = ConfigFile {
+              rows = toRow <$> rows conf
+            , reportTitle = reportTitle conf
+            , historyWindowDays = historyWindowDays conf
+            , targetURL = targetURL conf
+            }
 
-instance FromJSON ConfigFile where
+data ConfigFile a = ConfigFile {
+      rows :: [a]
+    , reportTitle :: Text
+    , historyWindowDays :: Int
+    , targetURL :: Text
+    }
+
+-- TODO switch over to generics
+instance FromJSON (ConfigFile RowSpec) where
     parseJSON = withObject "Config file" $ \raw -> do
         rowSpecs <- raw .: "rows"
-        pure $ ConfigFile rowSpecs
+        reportTitle <- raw .: "report_title"
+        historyWindowDays <- raw .: "history_window_days"
+        targetURL <- raw .: "target_url"
+        pure $ ConfigFile rowSpecs reportTitle historyWindowDays targetURL
 
 data RowSpec =
     PSQLRow Title Link PostgresMetricSource

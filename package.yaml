@@ -25,6 +25,8 @@ dependencies:
 - bytestring
 - containers
 - http-client
+- http-client-tls
+- http-types
 - mtl
 - postgresql-simple
 - protolude
