@@ -8,6 +8,7 @@ import Protolude
 
 import Data.Aeson
 import Data.Aeson.Types (typeMismatch)
+import qualified Data.Text as T
 import Data.Yaml (decodeFileEither)
 
 import Statsbot.Types (
@@ -57,7 +58,7 @@ loadRowConfigurations ::
 loadRowConfigurations configFile = do
     res <- decodeFileEither configFile
     case res of
-        Left err -> pure $ Left (ConfigLoadError "whoops")
+        Left err -> pure $ Left (ConfigLoadError . T.pack $ show err)
         Right conf -> pure . Right $ translateConfigRows conf
     where
         toRow :: RowSpec -> Row

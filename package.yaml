@@ -27,7 +27,6 @@ dependencies:
 - http-client
 - http-client-tls
 - http-types
-- mtl
 - postgresql-simple
 - protolude
 - text
@@ -74,7 +73,7 @@ library:
   source-dirs: src
 
 executables:
-  statsbot-exe:
+  statsbot:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
