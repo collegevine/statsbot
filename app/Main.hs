@@ -3,7 +3,7 @@ module Main where
 import Protolude
 import qualified Data.Text as T
 import Statsbot
-import System.IO
+import System.IO (BufferMode(..), hSetBuffering)
 
 main :: IO ()
 main = do
@@ -12,4 +12,5 @@ main = do
     reportFile <- maybe (print "You must provide a report .yaml file" *> exitFailure)
                         pure $
                         head args
-    runStatsbot reportFile
+    let testMode = "--test" `elem` args
+    runStatsbot reportFile testMode

@@ -13,15 +13,18 @@ import Statsbot.Types
 
 runStatsbot ::
     FilePath
+    -> Bool
     -> IO ()
-runStatsbot configFilePath = do
+runStatsbot configFilePath testMode = do
     loaderResults <- loadRowConfigurations configFilePath
     config <- case loaderResults of
                 Right rows -> pure rows
                 Left (ConfigLoadError err) -> putStrLn err *>  exitFailure
     rows <- mapM toReportRow $ rows config
     let body = prettySlackReport (reportTitle config) (historyWindowDays config) rows
-    publishReport (targetURL config) (reportTitle config) body
+    if testMode
+        then putStrLn body
+        else publishReport (targetURL config) (reportTitle config) body
 
 toReportRow (Row t l m) = do
     evaluated <- evaluateSource m
